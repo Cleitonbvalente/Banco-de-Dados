@@ -1,0 +1,500 @@
+CREATE DATABASE  IF NOT EXISTS `universidade_2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `universidade_2`;
+-- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+--
+-- Host: localhost    Database: universidade_u
+-- ------------------------------------------------------
+-- Server version	8.1.0
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `aluno`
+--
+
+DROP TABLE IF EXISTS `aluno`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aluno` (
+  `idaluno` int NOT NULL AUTO_INCREMENT,
+  `sexo` char(1) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `nome` varchar(25) DEFAULT NULL,
+  `cpf` varchar(14) DEFAULT NULL,
+  `data_nascimento` date DEFAULT NULL,
+  `ativo_sn` int DEFAULT '1',
+  PRIMARY KEY (`idaluno`),
+  UNIQUE KEY `uc_aluno_cpf` (`cpf`),
+  UNIQUE KEY `uc_aluno_email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aluno`
+--
+
+LOCK TABLES `aluno` WRITE;
+/*!40000 ALTER TABLE `aluno` DISABLE KEYS */;
+INSERT INTO `aluno` VALUES (1,'M','jose@teste.com.br','José','222.222.222-22','1985-06-01',1),(2,'F','maria@teste.com.br','Maria','111.111.111-11','1979-12-10',1),(3,'F','rosa@teste.com.br','Rosa','333.333.333-33','1990-12-22',1),(4,'M','joao@teste.com.br','João','444.444.444-44','1970-08-05',1),(5,'M','pedro@teste.com.br','Pedro','555.555.555-55','1967-07-02',1),(6,'F','bianca@teste.com.br','Bianca','666.666.666-66','1995-11-22',1),(7,'M','jorge@teste.com.br','Jorge','777.777.777-77','1989-01-06',1),(8,'F','mariana@teste.com.br','Mariana','888.888.888-88','1980-01-30',1),(9,'M','antonio@teste.com.br','Antônio','999.999.999-99','1991-12-03',1);
+/*!40000 ALTER TABLE `aluno` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `aluno_curso`
+--
+
+DROP TABLE IF EXISTS `aluno_curso`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aluno_curso` (
+  `fk_idaluno` int NOT NULL,
+  `fk_idcurso` int NOT NULL,
+  `data_inscricao_curso` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `valor_pago_curso` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`fk_idaluno`,`fk_idcurso`,`data_inscricao_curso`),
+  KEY `fk_curso_aluno` (`fk_idcurso`),
+  CONSTRAINT `fk_aluno_curso` FOREIGN KEY (`fk_idaluno`) REFERENCES `aluno` (`idaluno`),
+  CONSTRAINT `fk_curso_aluno` FOREIGN KEY (`fk_idcurso`) REFERENCES `curso` (`idcurso`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aluno_curso`
+--
+
+LOCK TABLES `aluno_curso` WRITE;
+/*!40000 ALTER TABLE `aluno_curso` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aluno_curso` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `curso`
+--
+
+DROP TABLE IF EXISTS `curso`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `curso` (
+  `idcurso` int NOT NULL AUTO_INCREMENT,
+  `descricao` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idcurso`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `curso`
+--
+
+LOCK TABLES `curso` WRITE;
+/*!40000 ALTER TABLE `curso` DISABLE KEYS */;
+INSERT INTO `curso` VALUES (1,'NodeJS e MongoDB'),(2,'Web Completo 2019'),(3,'ES6, TypeScript e Angular'),(4,'React Native'),(5,'Bancos de Dados Relacionais');
+/*!40000 ALTER TABLE `curso` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `disciplina`
+--
+
+DROP TABLE IF EXISTS `disciplina`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `disciplina` (
+  `iddisciplina` int NOT NULL AUTO_INCREMENT,
+  `descricao` varchar(50) NOT NULL,
+  `carga_horaria` int DEFAULT NULL,
+  `fk_idprofessor` int DEFAULT NULL,
+  `fk_idcurso` int DEFAULT NULL,
+  PRIMARY KEY (`iddisciplina`),
+  KEY `fk_curso_disciplina` (`fk_idcurso`),
+  KEY `fk_disciplina_professor` (`fk_idprofessor`),
+  CONSTRAINT `fk_curso_disciplina` FOREIGN KEY (`fk_idcurso`) REFERENCES `curso` (`idcurso`),
+  CONSTRAINT `fk_disciplina_professor` FOREIGN KEY (`fk_idprofessor`) REFERENCES `professor` (`idprofessor`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `disciplina`
+--
+
+LOCK TABLES `disciplina` WRITE;
+/*!40000 ALTER TABLE `disciplina` DISABLE KEYS */;
+INSERT INTO `disciplina` VALUES (1,'HTML',4,5,2),(2,'CSS',3,NULL,2),(3,'Bootstrap',5,5,2),(4,'JavaScript',10,NULL,2),(5,'PHP',15,NULL,2),(6,'NodeJS',8,3,1),(7,'MongoDB',6,3,1),(8,'Express',4,3,NULL),(9,'ES6',7,3,3),(10,'TypeScript',4,3,3),(11,'Orientada a Objetos',5,NULL,3),(12,'Angular',20,4,3),(13,'ES6',7,3,NULL),(14,'Ract Native',7,8,4),(15,'Redux',4,8,4),(16,'MySQL',7,NULL,5);
+/*!40000 ALTER TABLE `disciplina` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `endereco`
+--
+
+DROP TABLE IF EXISTS `endereco`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `endereco` (
+  `idendereco` int NOT NULL AUTO_INCREMENT,
+  `logradouro` varchar(100) DEFAULT NULL,
+  `numero` varchar(10) DEFAULT NULL,
+  `complemento` varchar(20) DEFAULT NULL,
+  `bairro` varchar(100) DEFAULT NULL,
+  `cidade` varchar(50) DEFAULT NULL,
+  `estado` char(2) DEFAULT NULL,
+  `fk_idaluno` int DEFAULT NULL,
+  PRIMARY KEY (`idendereco`),
+  UNIQUE KEY `uc_endereco_fkidaluno` (`fk_idaluno`),
+  CONSTRAINT `fk_aluno_endereco` FOREIGN KEY (`fk_idaluno`) REFERENCES `aluno` (`idaluno`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `endereco`
+--
+
+LOCK TABLES `endereco` WRITE;
+/*!40000 ALTER TABLE `endereco` DISABLE KEYS */;
+INSERT INTO `endereco` VALUES (1,'Rua 9','nº 9',NULL,'Bairro 9','São Paulo','SP',9),(2,'Rua 5','nº 5',NULL,'Bairro 5','Belo Horizonte','MG',5),(3,'Rua 3','nº 3',NULL,'Bairro 3','Natal','RN',3),(4,'Rua 8','nº 8',NULL,'Bairro 8','Rio de Janeiro','RJ',8),(5,'Rua 4','nº 4',NULL,'Bairro 4','Fortaleza','CE',4),(6,'Rua 1','nº 1',NULL,'Bairro 1','Manaus','AM',1),(7,'Rua 7','nº 7',NULL,'Bairro 7','Goiânia','GO',7),(8,'Rua 2','nº 2',NULL,'Bairro 2','Florianópolis','SC',2),(9,'Rua 6','nº 6',NULL,'Bairro 6','Vitória','ES',6);
+/*!40000 ALTER TABLE `endereco` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `funcionario`
+--
+
+DROP TABLE IF EXISTS `funcionario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `funcionario` (
+  `idfuncionario` int NOT NULL AUTO_INCREMENT,
+  `matricula` int NOT NULL,
+  `nome` varchar(50) NOT NULL,
+  `funcao` varchar(50) DEFAULT NULL,
+  `telefone` varchar(20) DEFAULT NULL,
+  `fk_idfuncionario_supervisor` int DEFAULT NULL,
+  PRIMARY KEY (`idfuncionario`),
+  KEY `fk_funcionario_supervisor` (`fk_idfuncionario_supervisor`),
+  CONSTRAINT `fk_funcionario_supervisor` FOREIGN KEY (`fk_idfuncionario_supervisor`) REFERENCES `funcionario` (`idfuncionario`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `funcionario`
+--
+
+LOCK TABLES `funcionario` WRITE;
+/*!40000 ALTER TABLE `funcionario` DISABLE KEYS */;
+INSERT INTO `funcionario` VALUES (1,1,'Rubens','Assistente Administrativo','11 3333-4444',NULL),(2,2,'Mônica','Gerente de Atendimento','11 4444-4444',NULL),(3,3,'Marcelo','Técnico de Informática','11 3333-3333',NULL);
+/*!40000 ALTER TABLE `funcionario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `funcionario_log`
+--
+
+DROP TABLE IF EXISTS `funcionario_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `funcionario_log` (
+  `idfuncionario_log` int NOT NULL AUTO_INCREMENT,
+  `fk_idfuncionario` int DEFAULT NULL,
+  `data_log` datetime DEFAULT CURRENT_TIMESTAMP,
+  `tipo_log` char(2) NOT NULL,
+  `funcao_antiga` varchar(50) DEFAULT NULL,
+  `funcao_nova` varchar(50) DEFAULT NULL,
+  `telefone_antigo` varchar(20) DEFAULT NULL,
+  `telefone_novo` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`idfuncionario_log`),
+  KEY `fk_projeto_log_funcionario` (`fk_idfuncionario`),
+  CONSTRAINT `fk_projeto_log_funcionario` FOREIGN KEY (`fk_idfuncionario`) REFERENCES `funcionario` (`idfuncionario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `funcionario_log`
+--
+
+LOCK TABLES `funcionario_log` WRITE;
+/*!40000 ALTER TABLE `funcionario_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `funcionario_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gasto`
+--
+
+DROP TABLE IF EXISTS `gasto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gasto` (
+  `idgasto` int NOT NULL AUTO_INCREMENT,
+  `ano` int NOT NULL,
+  `tipo` enum('previsto','realizado') NOT NULL,
+  `jan` float(10,2) DEFAULT NULL,
+  `fev` float(10,2) DEFAULT NULL,
+  `mar` float(10,2) DEFAULT NULL,
+  `abr` float(10,2) DEFAULT NULL,
+  `mai` float(10,2) DEFAULT NULL,
+  `jun` float(10,2) DEFAULT NULL,
+  `jul` float(10,2) DEFAULT NULL,
+  `ago` float(10,2) DEFAULT NULL,
+  `set` float(10,2) DEFAULT NULL,
+  `out` float(10,2) DEFAULT NULL,
+  `nov` float(10,2) DEFAULT NULL,
+  `dez` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idgasto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gasto`
+--
+
+LOCK TABLES `gasto` WRITE;
+/*!40000 ALTER TABLE `gasto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gasto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `professor`
+--
+
+DROP TABLE IF EXISTS `professor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `professor` (
+  `idprofessor` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(50) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`idprofessor`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `professor`
+--
+
+LOCK TABLES `professor` WRITE;
+/*!40000 ALTER TABLE `professor` DISABLE KEYS */;
+INSERT INTO `professor` VALUES (1,'Laura','laura@teste.com.br'),(2,'Miguel','miguel@teste.com.br'),(3,'Sofia','sofia@teste.com.br'),(4,'Patrícia','patricia@teste.com.br'),(5,'Arthur','arthur@teste.com.br'),(6,'Breno','breno@teste.com.br'),(7,'Raquel','raquel@teste.com.br'),(8,'Hugo','hugo@teste.com.br'),(9,'Alex','alex@teste.com.br');
+/*!40000 ALTER TABLE `professor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `projeto`
+--
+
+DROP TABLE IF EXISTS `projeto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `projeto` (
+  `idcodigo` int NOT NULL AUTO_INCREMENT,
+  `data_criacao` datetime DEFAULT CURRENT_TIMESTAMP,
+  `nome` varchar(100) NOT NULL,
+  PRIMARY KEY (`idcodigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projeto`
+--
+
+LOCK TABLES `projeto` WRITE;
+/*!40000 ALTER TABLE `projeto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `projeto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `projeto_funcionario`
+--
+
+DROP TABLE IF EXISTS `projeto_funcionario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `projeto_funcionario` (
+  `fk_idcodigo` int NOT NULL,
+  `fk_idfuncionario` int NOT NULL,
+  `horas_estimadas` int NOT NULL,
+  `horas_realizadas` int DEFAULT NULL,
+  PRIMARY KEY (`fk_idcodigo`,`fk_idfuncionario`),
+  KEY `fk_projeto_funcionario_funcionario` (`fk_idfuncionario`),
+  CONSTRAINT `fk_projeto_funcionario_funcionario` FOREIGN KEY (`fk_idfuncionario`) REFERENCES `funcionario` (`idfuncionario`),
+  CONSTRAINT `projeto_funcionario_ibfk_1` FOREIGN KEY (`fk_idcodigo`) REFERENCES `projeto` (`idcodigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projeto_funcionario`
+--
+
+LOCK TABLES `projeto_funcionario` WRITE;
+/*!40000 ALTER TABLE `projeto_funcionario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `projeto_funcionario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `telefone`
+--
+
+DROP TABLE IF EXISTS `telefone`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `telefone` (
+  `idtelefone` int NOT NULL AUTO_INCREMENT,
+  `numero` varchar(20) NOT NULL,
+  `fk_idaluno` int NOT NULL,
+  `tipo` enum('res','com','cel') NOT NULL,
+  PRIMARY KEY (`idtelefone`),
+  KEY `fk_aluno_telefone` (`fk_idaluno`),
+  CONSTRAINT `fk_aluno_telefone` FOREIGN KEY (`fk_idaluno`) REFERENCES `aluno` (`idaluno`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `telefone`
+--
+
+LOCK TABLES `telefone` WRITE;
+/*!40000 ALTER TABLE `telefone` DISABLE KEYS */;
+INSERT INTO `telefone` VALUES (1,'11 92222-2222',9,'cel'),(2,'11 3333-2222',9,'com'),(3,'31 5555-2222',5,'res'),(4,'21 4444-1111',8,'res'),(5,'21 91111-2222',9,'cel'),(6,'62 98888-7777',7,'cel'),(7,'62 4444-4444',7,'com'),(8,'62 6666-9999',7,'res'),(9,'27 95555-0000',6,'cel');
+/*!40000 ALTER TABLE `telefone` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-09-17 11:48:29
+
+use universidade_2;
+delimiter //
+create trigger valor_pago_zero
+before insert on aluno_curso
+for each row
+begin
+if NEW.valor_pago_curso<0 then
+SET NEW.valor_pago_curso=0;
+end if;
+end//
+
+delimiter ;
+
+select * from aluno_curso;
+
+insert into aluno_curso(fk_idaluno, fk_idcurso, valor_pago_curso)
+values (1, 1, -500);
+
+use universidade_2;
+delimiter //
+create trigger funcao_default
+before insert on funcionario
+for each row
+begin
+if NEW.funcao is null then
+SET NEW.funcao="Sem função";
+end if;
+end//
+
+delimiter ;
+
+insert into funcionario(matricula, nome, funcao, telefone)
+values (6, "Maria", null, "888888888");
+
+select * from funcionario;
+
+show triggers;
+
+show create trigger valor_pago_zero;
+
+drop trigger valor_pago_zero;
+
+use universidade_2;
+delimiter //
+create trigger inserir_funcionario
+after insert on funcionario
+for each row
+begin
+insert into funcionario_log(fk_idfuncionario, tipo_log, funcao_antiga, 
+funcao_nova, telefone_antigo, telefone_novo) values 
+(null, "AI", null, NEW.funcao, null, NEW.telefone);
+end //
+
+delimiter ;
+
+drop trigger inserir_funcionario;
+
+insert into funcionario(matricula, nome, funcao, telefone)
+values(7, "José", "Assistente", "99999999");
+
+select * from funcionario;
+
+select * from funcionario_log;
+
+use universidade_2;
+delimiter //
+create trigger bf_funcionario
+before delete on funcionario
+for each row
+begin
+insert into funcionario_log(fk_idfuncionario, tipo_log, funcao_antiga,
+funcao_nova, telefone_antigo, telefone_novo) values
+(OLD.idfuncionario, "BD", OLD.funcao, null, OLD.telefone, null);
+end //
+
+delimiter ;
+
+set foreign_key_checks = 0;
+
+select * from funcionario;
+
+delete from funcionario where idfuncionario=8;
+
+select * from funcionario_log;
+
+use universidade_2;
+delimiter //
+create trigger bu_funcionario
+before update on funcionario
+for each row
+begin
+insert into funcionario_log(fk_idfuncionario, tipo_log, funcao_antiga,
+funcao_nova, telefone_antigo, telefone_novo) values
+(OLD.idfuncionario, "BU", OLD.funcao, NEW.funcao,
+OLD.telefone, NEW.telefone);
+end //
+
+delimiter ;
+
+select * from funcionario_log;
+
+update funcionario
+set funcao="Diretor", telefone="0000000000"
+where idfuncionario=1;
+
+use universidade_2;
+
+create view exemplo1 as
+select * from funcionario;
+
+select * from exemplo1;
+
+use universidade_2;
+
+create view vw_exemplo2 as
+select curso.descricao as curso, disciplina.descricao as disciplina, professor.nome
+from curso join disciplina on (curso.idcurso=disciplina.fk_idcurso)
+join professor on (disciplina.fk_idprofessor = professor.idprofessor) ;
+
+select * from vw_exemplo2;
+
+show tables;
